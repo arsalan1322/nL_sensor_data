@@ -1,0 +1,118 @@
+import csv
+
+# ----------------------------------------------------------------------
+# GETTING READINGS FROM XL-500 SENSOR
+# ----------------------------------------------------------------------
+
+nL_XL_readings = []
+
+# read through the csv file
+with open('XL500_data/XLdata1.csv') as nL_XL:
+    reader = csv.reader(nL_XL, delimiter=',')
+    row = 0
+    for lst in reader:
+        if row == 7:
+            nL_XL_readings = lst[1:]
+        row += 1
+# convert data into float values and round to 13 decimal places
+i = 0
+while i < len(nL_XL_readings):
+    rounded = round(float(nL_XL_readings[i]), 13)
+    nL_XL_readings[i] = rounded
+    i += 1
+# print(nL_XL_readings)
+
+# ----------------------------------------------------------------------
+# GETTING READINGS FROM THE POWER CALIBRATED NSP32 SENSOR
+# ----------------------------------------------------------------------
+
+nL_NSP_PCreadings = []
+
+# read through the csv file
+with open('NSP32_PCdata/NSP_PCdata1.csv') as nL_NSP_PC:
+    reader = csv.reader(nL_NSP_PC, delimiter=',')
+    row = 0
+    for lst in reader:
+        if row == 1:
+            nL_NSP_PCreadings = lst[:len(lst) - 1]
+        row += 1
+# convert data into float values and round to 13 decimal places
+i = 0
+while i < len(nL_NSP_PCreadings):
+    rounded = round(float(nL_NSP_PCreadings[i]), 13)
+    nL_NSP_PCreadings[i] = rounded
+    i += 1
+# print(nL_NSP_PCreadings)
+
+# ----------------------------------------------------------------------
+# GETTING READINGS FROM THE NON POWER CALIBRATED NSP32 SENSOR
+# ----------------------------------------------------------------------
+
+nL_NSP_NPCreadings = []
+
+# read through the csv file
+with open('NSP32_NPCdata/NSP_NPCdata1.csv') as nL_NSP_NPC:
+    reader = csv.reader(nL_NSP_NPC, delimiter=',')
+    row = 0
+    for lst in reader:
+        if row == 1:
+            nL_NSP_NPCreadings = lst[:len(lst) - 1]
+        row += 1
+# convert data into float values and round to 13 decimal places
+i = 0
+while i < len(nL_NSP_NPCreadings):
+    rounded = round(float(nL_NSP_NPCreadings[i]), 13)
+    nL_NSP_NPCreadings[i] = rounded
+    i += 1
+# print(nL_NSP_NPCreadings)
+
+# ----------------------------------------------------------------------
+# CALCULATING THE RATIO BETWEEN PC NSP32 AND XL-500 DATA
+# ----------------------------------------------------------------------
+
+PC_XLratios = []
+
+i = 0
+while i < 135: # there are 135 data points
+    if nL_XL_readings[i] == 0.0:
+        PC_XLratios.append(0.0)
+    else:
+        ratio = nL_NSP_PCreadings[i] / nL_XL_readings[i]
+        PC_XLratios.append(ratio)
+    i += 1
+print(PC_XLratios)
+print(len(PC_XLratios))
+
+# ----------------------------------------------------------------------
+# CALCULATING THE RATIO BETWEEN NPC NSP32 AND XL-500 DATA
+# ----------------------------------------------------------------------
+
+NPC_XLratios = []
+
+i = 0
+while i < 135: # there are 135 data points
+    if nL_XL_readings[i] == 0.0:
+        NPC_XLratios.append(0.0)
+    else:
+        ratio = nL_NSP_NPCreadings[i] / nL_XL_readings[i]
+        NPC_XLratios.append(ratio)
+    i += 1
+print(NPC_XLratios)
+print(len(NPC_XLratios))
+
+# ----------------------------------------------------------------------
+# CALCULATING THE RATIO BETWEEN NPC NSP32 AND PC NSP32 DATA
+# ----------------------------------------------------------------------
+
+NPC_PCratios = []
+
+i = 0
+while i < 135: # there are 135 data points
+    if nL_NSP_PCreadings[i] == 0.0:
+        NPC_PCratios.append(0.0)
+    else:
+        ratio = nL_NSP_NPCreadings[i] / nL_NSP_PCreadings[i]
+        NPC_PCratios.append(ratio)
+    i += 1
+print(NPC_PCratios)
+print(len(NPC_PCratios))
